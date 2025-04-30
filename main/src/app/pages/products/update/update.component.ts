@@ -25,14 +25,24 @@ export class UpdateComponent {
   form = this.fb.group({
     name: [''],
     stock:[0],
-    price: [0]
+    price: [0],
+    createdDate: [null as Date | null],
+    updateDate: [null as Date | null],
   });
   productid!: number;
 constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router, private route: ActivatedRoute) {}
 ngOnInit(): void {
   this.productid = +this.route.snapshot.params['id'];
   this.https.get<Product>({ controller: 'Product' }, this.productid.toString()).subscribe((product) => {
-    this.form.patchValue(product);
+    const patchedProduct = {
+      ...product,
+      createdDate: product.createdDate ? new Date(product.createdDate) : null,
+      updateDate: product.updateDate ? new Date(product.updateDate) : null,
+    };
+
+    this.form.patchValue(patchedProduct);
+    console.log('Ürün verisi:', patchedProduct);
+    
   });
 }
 goBack() {
@@ -40,13 +50,16 @@ goBack() {
 }
  submit() {
     
-    if (this.form.invalid) return;
-    const updateProduct : Product = {
-      name: this.form.value.name ?? '',
-      stock: this.form.value.stock ?? 0,
-      price: this.form.value.price ?? 0,
-      id: this.productid,
-    };
+  if (this.form.invalid) return;
+
+  const updateProduct: Product = {
+    id: this.productid,
+    name: this.form.value.name ?? '',
+    stock: this.form.value.stock ?? 0,
+    price: this.form.value.price ?? 0,
+    createdDate: this.form.value.createdDate ?? null,
+    updateDate: this.form.value.updateDate ? new Date(this.form.value.updateDate) : null,
+  };
     this.https.put<Product>({ controller: 'Product' }, updateProduct).subscribe(() => {
       alert('Ürün eklendi');
       this.router.navigate(['/dashboard/products']); // liste sayfasına dön

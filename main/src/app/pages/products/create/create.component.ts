@@ -11,7 +11,7 @@ import { MatCardHeader } from '@angular/material/card';
 import { MatCard } from '@angular/material/card';
 import { MatCardTitle } from '@angular/material/card';
 import { MatCardContent } from '@angular/material/card';
-
+import { Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-create',
@@ -23,9 +23,9 @@ import { MatCardContent } from '@angular/material/card';
 })
 export class CreateComponent {
   form = this.fb.group({
-    name: [''],
-    stock: [0],
-    price: [0]
+    name: ['', [Validators.required, Validators.minLength(3)]],
+    stock: [0, [Validators.required, Validators.min(1)]],
+    price: [0, [Validators.required, Validators.min(1)]],
   });
 
   constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router) {}
@@ -34,17 +34,21 @@ export class CreateComponent {
   }
   
   submit() {
-    
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched(); // tüm alanları tetikler
+      return;
+    }
+  
     const newProduct: Product = {
       name: this.form.value.name ?? '',
       stock: this.form.value.stock ?? 0,
       price: this.form.value.price ?? 0,
-      id: 0 // ID genelde backend'de atanır
+      id: 0,
     };
+  
     this.https.post<Product>({ controller: 'Product' }, newProduct).subscribe(() => {
       alert('Ürün eklendi');
-      this.router.navigate(['/dashboard/products']); // liste sayfasına dön
+      this.router.navigate(['/dashboard/products']);
     });
   }
 }
