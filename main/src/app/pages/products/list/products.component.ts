@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 export class ProductsComponent {
   private httpClientService = inject(HttpClientService);
   private router = inject(Router); 
-  displayedColumns: string[] = ['id', 'name', 'stock','price', 'actions'];
+  displayedColumns: string[] = ['name', 'stock','price', 'createdDate','updateDate','actions'];
 
   dataSource: Product[] = []; 
 
