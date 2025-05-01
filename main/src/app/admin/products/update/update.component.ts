@@ -46,7 +46,7 @@ ngOnInit(): void {
   });
 }
 goBack() {
-  this.router.navigate(['/dashboard/products']);
+  this.router.navigate(['/products']);
 }
  submit() {
     
@@ -62,7 +62,7 @@ goBack() {
   };
     this.https.put<Product>({ controller: 'Product' }, updateProduct).subscribe(() => {
       alert('Ürün eklendi');
-      this.router.navigate(['/dashboard/products']); // liste sayfasına dön
+      this.router.navigate(['/products']); // liste sayfasına dön
     });
   }
 }

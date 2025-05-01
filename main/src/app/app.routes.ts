@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
+import { ProductsComponent } from './admin/products/list/products.component';
+import { CreateComponent } from './admin/products/create/create.component';
+import { UpdateComponent } from './admin/products/update/update.component';
 
 export const routes: Routes = [
   {
@@ -11,6 +14,22 @@ export const routes: Routes = [
         path: '',
         redirectTo: '/dashboard',
         pathMatch: 'full',
+      },
+      {
+        path: 'products',
+        component: ProductsComponent,
+        data: {
+          title: 'Products',
+          urls: [{ title: 'Products' }],
+        },
+      },
+      {
+        path:'products/create',
+        component: CreateComponent,
+      },
+      {
+        path:'products/update/:id',
+        component: UpdateComponent,
       },
       {
         path: 'dashboard',
