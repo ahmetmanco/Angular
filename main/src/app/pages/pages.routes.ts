@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { StarterComponent } from './starter/starter.component';
-import { ProductsComponent } from './products/list/products.component';
-import { CreateComponent } from './products/create/create.component';
-import { UpdateComponent } from './products/update/update.component';
+// import { ProductsComponent } from './products/list/products.component';
+// import { CreateComponent } from './products/create/create.component';
+// import { UpdateComponent } from './products/update/update.component';
 export const PagesRoutes: Routes = [
   {
     path: '',
@@ -15,21 +15,21 @@ export const PagesRoutes: Routes = [
       ],
     },
   },
-  {
-    path: 'products',
-    component: ProductsComponent,
-    data: {
-      title: 'Products',
-      urls: [{ title: 'Products' }],
-    },
-  },
-  {
-    path:'products/create',
-    component: CreateComponent,
-  },
-  {
-    path:'products/update/:id',
-    component: UpdateComponent,
-  }
+  // {
+  //   path: 'products',
+  //   component: ProductsComponent,
+  //   data: {
+  //     title: 'Products',
+  //     urls: [{ title: 'Products' }],
+  //   },
+  // },
+  // {
+  //   path:'products/create',
+  //   component: CreateComponent,
+  // },
+  // {
+  //   path:'products/update/:id',
+  //   component: UpdateComponent,
+  // }
   
 ];

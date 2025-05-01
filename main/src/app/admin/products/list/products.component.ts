@@ -37,12 +37,12 @@ export class ProductsComponent {
   }
   onAdd() {
     console.log('Ekle butonuna tıklandı');
-    this.router.navigate(['/dashboard/products/create']);
+    this.router.navigate(['/products/create']);
   }
   
   onEdit(product: Product) {
     console.log('Güncelle:', product);
-    this.router.navigate([`/dashboard/products/update/${product.id}`]);
+    this.router.navigate([`/products/update/${product.id}`]);
   }
   
   onDelete(product: Product) {

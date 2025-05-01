@@ -30,7 +30,7 @@ export class CreateComponent {
 
   constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router) {}
   goBack() {
-    this.router.navigate(['/dashboard/products']);
+    this.router.navigate(['/products']);
   }
   
   submit() {
@@ -48,7 +48,7 @@ export class CreateComponent {
   
     this.https.post<Product>({ controller: 'Product' }, newProduct).subscribe(() => {
       alert('Ürün eklendi');
-      this.router.navigate(['/dashboard/products']);
+      this.router.navigate(['/products']);
     });
   }
 }
