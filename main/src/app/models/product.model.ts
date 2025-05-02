@@ -7,4 +7,5 @@ export interface Product {
     price: number;
     createdDate?: Date | null;
     updateDate?: Date | null;
+    image?: string;
   }

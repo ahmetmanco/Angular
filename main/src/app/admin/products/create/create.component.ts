@@ -1,52 +1,76 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
-import { Product } from 'src/app/models/product.model';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
-import { MatCardHeader } from '@angular/material/card';
-import { MatCard } from '@angular/material/card';
-import { MatCardTitle } from '@angular/material/card';
-import { MatCardContent } from '@angular/material/card';
-import { Validators } from '@angular/forms';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { DateTimezoneSetter } from 'date-fns/parse/_lib/Setter';
+import { Product } from 'src/app/models/product.model';
 
 @Component({
   selector: 'app-create',
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardHeader, MatCardHeader, MatCardTitle,MatCard, MatCardContent],
   standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatCardHeader,
+    MatCardTitle,
+    MatCard,
+    MatCardContent,
+    MatIconModule
+  ],
   templateUrl: './create.component.html',
   styleUrl: './create.component.scss',
-  
 })
 export class CreateComponent {
   form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(3)]],
-    stock: [0, [Validators.required, Validators.min(1)]],
-    price: [0, [Validators.required, Validators.min(1)]],
+    name: ['', [Validators.required, Validators.minLength(5)]],
+    stock: ['', [Validators.required, Validators.min(1)]],
+    price: ['', [Validators.required, Validators.min(1)]],
   });
 
-  constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router) {}
+  selectedFile: File | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private https: HttpClientService,
+    private router: Router
+  ) {}
+
   goBack() {
     this.router.navigate(['/products']);
   }
-  
+
+  onFileSelected(event: Event): void {
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      this.selectedFile = fileInput.files[0];
+      console.log('Seçilen dosya:', this.selectedFile);
+    }
+  }
+
   submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched(); // tüm alanları tetikler
+    if (this.form.invalid || !this.selectedFile) {
+      this.form.markAllAsTouched();
+      alert('Form geçersiz veya resim seçilmedi.');
       return;
     }
+
+    const formData = new FormData();
+    formData.append('name', this.form.value.name!);
+    formData.append('stock', this.form.value.stock!.toString());
+    formData.append('price', this.form.value.price!.toString());
+    formData.append('image', this.selectedFile);
   
-    const newProduct: Product = {
-      name: this.form.value.name ?? '',
-      stock: this.form.value.stock ?? 0,
-      price: this.form.value.price ?? 0,
-      id: 0,
-    };
-  
-    this.https.post<Product>({ controller: 'Product' }, newProduct).subscribe(() => {
+    
+    this.https.postFormData<Product>({ controller: 'Product' }, formData).subscribe(() => {
       alert('Ürün eklendi');
       this.router.navigate(['/products']);
     });

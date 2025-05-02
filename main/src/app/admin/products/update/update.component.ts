@@ -12,11 +12,11 @@ import { Router } from '@angular/router';
 import { Product } from 'src/app/models/product.model';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
 import { ActivatedRoute } from '@angular/router';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-update',
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardHeader, MatCardHeader, MatCardTitle,MatCard, MatCardContent],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCardHeader, MatCardHeader, MatCardTitle,MatCard, MatCardContent, MatIconModule],
     standalone: true,
   templateUrl: './update.component.html',
   styleUrl: './update.component.scss'
@@ -28,7 +28,9 @@ export class UpdateComponent {
     price: [0],
     createdDate: [null as Date | null],
     updateDate: [null as Date | null],
+    image: ['']
   });
+  selectedFile: File | null = null;
   productid!: number;
 constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router, private route: ActivatedRoute) {}
 ngOnInit(): void {
@@ -48,21 +50,37 @@ ngOnInit(): void {
 goBack() {
   this.router.navigate(['/products']);
 }
+
+onFileSelected(event: Event): void {
+  const fileInput = event.target as HTMLInputElement;
+  if (fileInput.files && fileInput.files.length > 0) {
+    this.selectedFile = fileInput.files[0];
+    console.log('Seçilen dosya:', this.selectedFile);
+  }
+}
+
  submit() {
     
-  if (this.form.invalid) return;
+  if (this.form.invalid || !this.selectedFile) {
+    this.form.markAllAsTouched();
+    alert('Form geçersiz.');
+    return;
+  }
+  const formData = new FormData();
+  formData.append('id', this.productid.toString());
+  formData.append('name', this.form.value.name!);
+  formData.append('stock', this.form.value.stock!.toString());
+  formData.append('price', this.form.value.price!.toString());
+  formData.append('createdDate', this.form.value.createdDate?.toISOString() ?? '');
+  formData.append('updateDate', new Date().toISOString()); 
+  formData.append('image', this.selectedFile);
 
-  const updateProduct: Product = {
-    id: this.productid,
-    name: this.form.value.name ?? '',
-    stock: this.form.value.stock ?? 0,
-    price: this.form.value.price ?? 0,
-    createdDate: this.form.value.createdDate ?? null,
-    updateDate: this.form.value.updateDate ? new Date(this.form.value.updateDate) : null,
-  };
-    this.https.put<Product>({ controller: 'Product' }, updateProduct).subscribe(() => {
-      alert('Ürün eklendi');
-      this.router.navigate(['/products']); // liste sayfasına dön
-    });
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile);
+  }
+  this.https.putFormData<Product>({ controller: 'Product' }, formData).subscribe(() => {
+    alert('Ürün güncellendi');
+    this.router.navigate(['/products']);
+  });
   }
 }
