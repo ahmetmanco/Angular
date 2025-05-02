@@ -28,23 +28,28 @@ export class UpdateComponent {
     price: [0],
     createdDate: [null as Date | null],
     updateDate: [null as Date | null],
-    image: ['']
+    image: [null],
+    imageUrl: ['']
   });
   selectedFile: File | null = null;
   productid!: number;
 constructor(private fb: FormBuilder, private https: HttpClientService, private router: Router, private route: ActivatedRoute) {}
+
 ngOnInit(): void {
   this.productid = +this.route.snapshot.params['id'];
+
   this.https.get<Product>({ controller: 'Product' }, this.productid.toString()).subscribe((product) => {
     const patchedProduct = {
-      ...product,
+      name: product.name,
+      stock: product.stock,
+      price: product.price,
       createdDate: product.createdDate ? new Date(product.createdDate) : null,
       updateDate: product.updateDate ? new Date(product.updateDate) : null,
+      imageUrl: product.image // image URL backend'den geliyorsa burası
     };
 
     this.form.patchValue(patchedProduct);
     console.log('Ürün verisi:', patchedProduct);
-    
   });
 }
 goBack() {
@@ -59,28 +64,31 @@ onFileSelected(event: Event): void {
   }
 }
 
- submit() {
-    
-  if (this.form.invalid || !this.selectedFile) {
+submit() {
+  if (this.form.invalid) {
     this.form.markAllAsTouched();
     alert('Form geçersiz.');
     return;
   }
+
   const formData = new FormData();
   formData.append('id', this.productid.toString());
   formData.append('name', this.form.value.name!);
   formData.append('stock', this.form.value.stock!.toString());
   formData.append('price', this.form.value.price!.toString());
   formData.append('createdDate', this.form.value.createdDate?.toISOString() ?? '');
-  formData.append('updateDate', new Date().toISOString()); 
-  formData.append('image', this.selectedFile);
+  formData.append('updateDate', new Date().toISOString());
 
   if (this.selectedFile) {
     formData.append('image', this.selectedFile);
+  } else if (this.form.value.imageUrl) {
+    // Yeni resim yok, eski URL'yi gönder
+    formData.append('imageUrl', this.form.value.imageUrl);
   }
+
   this.https.putFormData<Product>({ controller: 'Product' }, formData).subscribe(() => {
     alert('Ürün güncellendi');
     this.router.navigate(['/products']);
   });
-  }
+}
 }

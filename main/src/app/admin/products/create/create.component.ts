@@ -31,7 +31,7 @@ import { Product } from 'src/app/models/product.model';
 })
 export class CreateComponent {
   form = this.fb.group({
-    name: ['', [Validators.required, Validators.minLength(5)]],
+    name: ['', [Validators.required, Validators.minLength(3)]],
     stock: ['', [Validators.required, Validators.min(1)]],
     price: ['', [Validators.required, Validators.min(1)]],
   });
