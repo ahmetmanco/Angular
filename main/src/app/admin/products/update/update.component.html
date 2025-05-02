@@ -26,6 +26,16 @@
               <input matInput formControlName="price" type="number" placeholder="Price " />
             </mat-form-field>
           </div>
+          <div class="col-lg-12">
+          <mat-label class="f-w-600 m-b-8 ">Product Image </mat-label>
+              <button mat-flat-button color="accent" type="button" (click)="fileInput.click()" class="m-b-8">
+                <mat-icon>upload</mat-icon> Select Image
+              </button>
+              <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="image/*"/>
+              <div *ngIf="selectedFile" class="m-t-8 text-muted">
+                Selected: {{ selectedFile.name }}
+              </div>
+            </div>
         </div>
         <div class="m-t-12">
           <button mat-flat-button color="primary" type="submit" class="m-r-8">Submit</button>

@@ -6,15 +6,13 @@ export const navItems: NavItem[] = [
     iconName: 'layout-grid-add',
     route: '/dashboard',
   },
-
   {
     displayName: 'Products',
     iconName: 'shopping-cart',
     route: '/products',
     chip: true,
     external: false, // (target="_blank")
-    // chipClass: 'bg-secondary text-white',
-    // chipContent: 'PRO',
+
   },
   {
     displayName: 'Categories',

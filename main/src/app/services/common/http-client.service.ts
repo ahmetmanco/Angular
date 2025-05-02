@@ -1,4 +1,4 @@
-import { Inject, inject, Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from 'rxjs';
 @Injectable({
@@ -37,13 +37,27 @@ else
 url = `${this.url(requestParameter)}`;
 return this.httpClient.put<T>(url,body, {headers: requestParameter.headers})
 } 
+postFormData<T>(requestParameter: Partial<RequestParameter> , formData: FormData): Observable<T> {
+let url: string = "";
+if(requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
+else
+   url = `${this.baseUrl}/${requestParameter.controller}`;
+  return this.httpClient.post<T>(url, formData, {headers: requestParameter.headers}); // content-type otomatik multipart olur
+}
+putFormData<T>(requestParameter: Partial<RequestParameter>, formData: FormData): Observable<T> {
+  let url: string = "";
+if(requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
+else
+   url = `${this.baseUrl}/${requestParameter.controller}`;
+  return this.httpClient.put<T>(url, formData, {headers: requestParameter.headers}); // PUT ile multipart gönderim
+}
 
 delete<T>(requestParameter : Partial<RequestParameter>, id: string) : Observable<T> {
   let url: string = "";
 if(requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
 else
-url = `${this.url(requestParameter)}/${id}`;
-return this.httpClient.delete<T>(url, {headers: requestParameter.headers})
+   url = `${this.url(requestParameter)}/${id}`;
+  return this.httpClient.delete<T>(url, {headers: requestParameter.headers})
 }
 }
 export class RequestParameter {

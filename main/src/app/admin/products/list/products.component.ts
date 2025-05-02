@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 export class ProductsComponent {
   private httpClientService = inject(HttpClientService);
   private router = inject(Router); 
-  displayedColumns: string[] = ['name', 'stock','price', 'createdDate','updateDate','actions'];
+  displayedColumns: string[] = ['image','name', 'stock','price', 'createdDate','updateDate','actions'];
 
   dataSource: Product[] = []; 
 
@@ -60,14 +60,20 @@ export class ProductsComponent {
   }
   getProduct() {
     this.httpClientService.get<Product[]>({
-      controller:'Product'
+      controller: 'Product'
     }).subscribe({
       next: (data) => {
-        this.dataSource = data;
+        this.dataSource = data.map(item => ({
+          ...item,
+          createdDate: item.createdDate ? new Date(item.createdDate) : null,
+          updateDate: item.updateDate ? new Date(item.updateDate) : null
+        }));
+        console.log('Dönüştürülmüş veriler:', this.dataSource);
       },
       error: (err) => {
         console.error('Hata:', err);
       }
     });
   }
+  
 }
