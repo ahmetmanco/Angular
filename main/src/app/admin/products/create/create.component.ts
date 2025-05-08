@@ -48,13 +48,31 @@ export class CreateComponent {
     this.router.navigate(['/products']);
   }
 
+  // onFileSelected(event: Event): void {
+  //   const fileInput = event.target as HTMLInputElement;
+  //   if (fileInput.files && fileInput.files.length > 0) {
+  //     this.selectedFile = fileInput.files[0];
+  //     console.log('Seçilen dosya:', this.selectedFile);
+  //   }
+  // }
   onFileSelected(event: Event): void {
-    const fileInput = event.target as HTMLInputElement;
-    if (fileInput.files && fileInput.files.length > 0) {
-      this.selectedFile = fileInput.files[0];
-      console.log('Seçilen dosya:', this.selectedFile);
+  const fileInput = event.target as HTMLInputElement;
+  if (fileInput.files && fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if (!validTypes.includes(file.type)) {
+      alert('Sadece JPG, JPEG veya PNG dosyaları yükleyebilirsiniz.');
+      fileInput.value = ''; // input'u temizle
+      this.selectedFile = null;
+      return;
     }
+
+    this.selectedFile = file;
+    console.log('Seçilen dosya:', this.selectedFile);
   }
+}
+
 
   submit() {
     if (this.form.invalid || !this.selectedFile) {
