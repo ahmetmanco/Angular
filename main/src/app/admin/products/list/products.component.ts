@@ -65,6 +65,9 @@ export class ProductsComponent {
       next: (data) => {
         this.dataSource = data.map(item => ({
           ...item,
+          image: item.image 
+         ? `https://ticaret.blob.core.windows.net/files/${item.image}`
+         : '',
           createdDate: item.createdDate ? new Date(item.createdDate) : null,
           updateDate: item.updateDate ? new Date(item.updateDate) : null
         }));
