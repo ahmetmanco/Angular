@@ -11,16 +11,19 @@ export class HttpClientService {
   private url(requestParameter : Partial<RequestParameter>): string {
     return `${requestParameter.baseUrl? requestParameter.baseUrl : this.baseUrl}/${requestParameter.controller}${requestParameter.action ? `/${requestParameter.action}`: ""}`;
   }
-get<T>(requestParameter : Partial<RequestParameter>, id?: string) : Observable<T>{
+get<T>(requestParameter: Partial<RequestParameter>, id?: string, queryString?: string): Observable<T> {
   let url: string = "";
 
-  if(requestParameter.fullEndPoint) url = requestParameter.fullEndPoint;
-  else
-   url = `${this.url(requestParameter)}${id? `/${id}`: ""}`;
-  
+  if (requestParameter.fullEndPoint) {
+    url = requestParameter.fullEndPoint;
+  } else {
+    url = `${this.url(requestParameter)}${id ? `/${id}` : ""}`;
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+  }
 
-  return this.httpClient.get<T>(url,{headers: requestParameter.headers});
-
+  return this.httpClient.get<T>(url, { headers: requestParameter.headers });
 }
 post<T>(requestParameter : Partial<RequestParameter>, body: Partial<T>) : Observable<T> {
   let url: string = "";
