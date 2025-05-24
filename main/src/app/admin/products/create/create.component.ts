@@ -8,7 +8,6 @@ import { Router } from '@angular/router';
 import { HttpClientService } from 'src/app/services/common/http-client.service';
 import { MatCard, MatCardHeader, MatCardTitle, MatCardContent, } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { DateTimezoneSetter } from 'date-fns/parse/_lib/Setter';
 import { Product } from 'src/app/models/product.model';
 
 @Component({
@@ -47,15 +46,9 @@ export class CreateComponent {
   goBack() {
     this.router.navigate(['/products']);
   }
+imagePreview: string | ArrayBuffer | null = null;
 
-  // onFileSelected(event: Event): void {
-  //   const fileInput = event.target as HTMLInputElement;
-  //   if (fileInput.files && fileInput.files.length > 0) {
-  //     this.selectedFile = fileInput.files[0];
-  //     console.log('Seçilen dosya:', this.selectedFile);
-  //   }
-  // }
-  onFileSelected(event: Event): void {
+onFileSelected(event: Event): void {
   const fileInput = event.target as HTMLInputElement;
   if (fileInput.files && fileInput.files.length > 0) {
     const file = fileInput.files[0];
@@ -63,13 +56,18 @@ export class CreateComponent {
 
     if (!validTypes.includes(file.type)) {
       alert('Sadece JPG, JPEG veya PNG dosyaları yükleyebilirsiniz.');
-      fileInput.value = ''; // input'u temizle
+      fileInput.value = '';
       this.selectedFile = null;
       return;
     }
 
     this.selectedFile = file;
-    console.log('Seçilen dosya:', this.selectedFile);
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    };
+    reader.readAsDataURL(file);
   }
 }
 
@@ -85,7 +83,7 @@ export class CreateComponent {
     formData.append('name', this.form.value.name!);
     formData.append('stock', this.form.value.stock!.toString());
     formData.append('price', this.form.value.price!.toString());
-    formData.append('image', this.selectedFile);
+    formData.append('Image', this.selectedFile);
   
     
     this.https.postFormData<Product>({ controller: 'Product' }, formData).subscribe(() => {

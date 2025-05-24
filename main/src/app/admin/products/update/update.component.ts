@@ -80,7 +80,7 @@ submit() {
   formData.append('updateDate', new Date().toISOString());
 
   if (this.selectedFile) {
-    formData.append('image', this.selectedFile);
+    formData.append('Image', this.selectedFile);
   } else if (this.form.value.imageUrl) {
     // Yeni resim yok, eski URL'yi gönder
     formData.append('imageUrl', this.form.value.imageUrl);

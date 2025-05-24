@@ -27,51 +27,64 @@ export class ProductsComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['image', 'name', 'stock', 'price', 'createdDate', 'updateDate', 'actions'];
 
-  dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>();
-
+  // dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>();
+ dataSource: Product[] = [];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngOnInit(): void {
-    this.getProduct();
+    setTimeout(() => {
+    this.getProduct(0, this.paginator?.pageSize || 5);
+  });
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+   
      this.paginator.page.subscribe(() => {
     this.getProduct(this.paginator.pageIndex, this.paginator.pageSize);
      });
+      // this.dataSource.paginator = this.paginator;
   }
 
 getProduct(pageIndex: number = 0, pageSize: number = 5): void {
   this.httpClientService.get<{ data: Product[], totalCount: number }>(
     { controller: 'Product' },
     undefined,
-    `page=${pageIndex + 1}&size=${pageSize}`
+    `page=${pageIndex}&size=${pageSize}`
   ).subscribe({
     next: (response) => {
+      console.log("Sunucudan gelen veri:", response);
+      console.log("Gelen ürünler:", response.data);
+
       const transformedData = this.transformProductData(response.data);
-      this.dataSource.data = transformedData;
-      this.paginator.length = response.totalCount ?? transformedData.length;
+
+      console.log("Dönüştürülmüş veri:", transformedData);
+
+      this.dataSource = this.transformProductData(response.data);
+      this.paginator.length = response.totalCount ?? response.data.length;
     },
     error: (err) => {
       console.error('Ürünler alınırken hata oluştu:', err);
     }
   });
 }
-pageChanged() {
- this.getProduct();
-}
+
+
 
 private transformProductData(products: Product[]): Product[] {
-  return products.map(item => ({
-    ...item,
-    image: item.image
-      ? `https://ticaret.blob.core.windows.net/files/${item.image}`
-      : '',
-    createdDate: item.createdDate ? new Date(item.createdDate) : null,
-    updateDate: item.updateDate ? new Date(item.updateDate) : null
-  }));
+  console.log("Before transform:", products);
+const transformed = products.map(item => ({
+  ...item,
+  image: item.image
+    ? `https://miniticaretstoragepublic.blob.core.windows.net/files/${item.image}`
+    : '',
+  createdDate: item.createdDate ? new Date(item.createdDate) : null,
+  updateDate: item.updateDate ? new Date(item.updateDate) : null
+}));
+console.log("After transform:", transformed);
+return transformed;
 }
+
+
 
   onAdd(): void {
     this.router.navigate(['/products/create']);

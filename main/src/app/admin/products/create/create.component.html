@@ -27,6 +27,8 @@
               </button>
               <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".jpg, .jpeg, .png"/>
               <div *ngIf="selectedFile" class="m-t-8 text-muted">
+                <img *ngIf="selectedFile" [src]="imagePreview" alt="Önizleme" width="150" class="m-t-8"/><br>
+
                 Selected: {{ selectedFile.name }}
               </div>
           </div>
