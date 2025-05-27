@@ -28,7 +28,7 @@ export class UpdateComponent {
     price: [0],
     createdDate: [null as Date | null],
     updateDate: [null as Date | null],
-    image: [null],
+    Image: [null],
     imageUrl: ['']
   });
   selectedFile: File | null = null;
@@ -45,7 +45,7 @@ ngOnInit(): void {
       price: product.price,
       createdDate: product.createdDate ? new Date(product.createdDate) : null,
       updateDate: product.updateDate ? new Date(product.updateDate) : null,
-      imageUrl: product.image // image URL backend'den geliyorsa burası
+      imageUrl: product.Image // image URL backend'den geliyorsa burası
     };
 
     this.form.patchValue(patchedProduct);

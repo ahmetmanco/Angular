@@ -1,0 +1,77 @@
+<div class="blank-layout-container justify-content-center align-items-center bg-light">
+  <div class="position-relative row w-100 h-100 bg-gredient justify-content-center">
+    <div class="col-lg-4 d-flex align-items-center">
+      <mat-card class="cardWithShadow boxed-auth">
+        <mat-card-content class="p-32">
+          <div class="text-center">
+            <a [routerLink]="['/dashboard']">
+              <h2>A-TICARET</h2>
+            </a>
+          </div>
+
+          <div class="row m-t-24 custom-row">
+            <div class="col-12 col-sm-6">
+              <button mat-stroked-button class="w-100">
+                <div class="d-flex align-items-center">
+                  <img src="/assets/images/svgs/google-icon.svg" alt="google" width="16" class="m-r-8" />
+                  Sign in with Google
+                </div>
+              </button>
+            </div>
+            <div class="col-12 col-sm-6">
+              <button mat-stroked-button class="w-100 d-flex align-items-center">
+                <div class="d-flex align-items-center">
+                  <img src="/assets/images/svgs/facebook-icon.svg" alt="facebook" width="40" class="m-r-4" />
+                  Sign in with FB
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="or-border m-t-30">or sign up with</div>
+
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">UserName</mat-label>
+           <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input matInput formControlName="uname" />
+            <mat-error *ngIf="f.uname.errors?.required">Username is required.</mat-error>
+            <mat-error *ngIf="f.uname.errors?.minlength">Username must be at least 6 characters.</mat-error>
+            </mat-form-field>
+
+
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Email Address</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input matInput type="email" formControlName="email" />
+            <mat-error *ngIf="f.email.errors?.required">Email is required.</mat-error>
+            <mat-error *ngIf="f.email.errors?.email">Invalid email format.</mat-error>
+            </mat-form-field>
+
+
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input matInput type="password" formControlName="password" />
+            <mat-error *ngIf="f.password.errors?.required">Password is required.</mat-error>
+            <mat-error *ngIf="f.password.errors?.minlength">Password must be at least 6 characters.</mat-error>
+            </mat-form-field>
+
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Confirm Password</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+            <input matInput type="password" formControlName="confirmPassword" />
+            <mat-error *ngIf="f.confirmPassword.errors?.required">Please confirm your password.</mat-error>
+            </mat-form-field>
+
+            <mat-error *ngIf="form.errors?.passwordMismatch && form.touched" class="text-danger text-center d-block m-b-12">
+             Passwords do not match.
+            </mat-error>
+            <button mat-flat-button color="primary" class="w-100" type="submit">Sign Up</button>
+          </form>
+
+          <span class="d-block f-w-500 text-center m-t-24">Already have an Account?
+            <a [routerLink]="['/authentication/login']" class="text-decoration-none text-primary f-w-500 f-s-14">
+              Sign In</a>
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
