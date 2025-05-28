@@ -5,11 +5,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
 import { CoreService } from 'src/app/services/core.service';
+import { CommonModule } from '@angular/common';
+import { User } from 'src/app/Entities/user';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, ReactiveFormsModule],
+  imports: [RouterModule, MaterialModule, FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -31,13 +33,18 @@ export class RegisterComponent {
   get f() {
     return this.form.controls;
   }
+  
+  submitted: boolean = false;
 
-  submit() {
-    if (this.form.invalid) return;
+submit() {
+  this.submitted = true;
 
-    console.log(this.form.value);
-    this.router.navigate(['/']);
-  }
+  if (this.form.invalid) return;
+
+  const user = this.form.value as User;
+  console.log(user);
+  this.router.navigate(['/']);
+}
 
   private passwordMatchValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {

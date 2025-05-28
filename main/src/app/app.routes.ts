@@ -5,6 +5,7 @@ import { ProductsComponent } from './admin/products/list/products.component';
 import { CreateComponent } from './admin/products/create/create.component';
 import { UpdateComponent } from './admin/products/update/update.component';
 import { RegisterComponent } from './ui/components/register/register.component';
+import { LoginComponent } from './ui/components/login/login.component';
 
 
 export const routes: Routes = [
@@ -56,6 +57,10 @@ export const routes: Routes = [
     path: '',
     component: BlankComponent,
     children: [
+       {
+      path: 'login',
+      component: LoginComponent,
+    },
       {
       path: 'register',
       component: RegisterComponent,
