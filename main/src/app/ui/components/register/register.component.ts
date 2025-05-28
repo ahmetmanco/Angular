@@ -7,18 +7,20 @@ import { MaterialModule } from 'src/app/material.module';
 import { CoreService } from 'src/app/services/core.service';
 import { CommonModule } from '@angular/common';
 import { User } from 'src/app/Entities/user';
+import { UserService } from 'src/app/services/common/user.service';
+import { Create_User } from 'src/app/contract/create_user';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterModule, MaterialModule, FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [RouterModule, MaterialModule ,FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
   options = this.settings.getOptions();
 
-  constructor(private settings: CoreService, private router: Router) {}
+  constructor(private settings: CoreService, private router: Router,private userService : UserService) {}
 
   form = new FormGroup(
     {
@@ -36,13 +38,18 @@ export class RegisterComponent {
   
   submitted: boolean = false;
 
-submit() {
+async submit() {
   this.submitted = true;
 
   if (this.form.invalid) return;
 
   const user = this.form.value as User;
   console.log(user);
+
+  const result : Create_User = await this.userService.create(user);
+  if(result.Succeeded) 
+    alert("kullanıcı kaydı başarılı");
+  
   this.router.navigate(['/']);
 }
 

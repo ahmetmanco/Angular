@@ -43,7 +43,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding()
     ),
     provideHttpClient(withInterceptorsFromDi()),
-    provideClientHydration(),
+    // provideClientHydration(),
     provideAnimationsAsync(),
     { provide: 'baseUrl', useValue: 'https://localhost:7275/api' ,multi:true}, 
     importProvidersFrom(
