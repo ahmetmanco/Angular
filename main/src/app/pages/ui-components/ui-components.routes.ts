@@ -9,6 +9,7 @@ import { AppTooltipsComponent } from './tooltips/tooltips.component';
 import { AppFormsComponent } from './forms/forms.component';
 import { AppTablesComponent } from './tables/tables.component';
 import { RegisterComponent } from 'src/app/ui/components/register/register.component';
+import { LoginComponent } from 'src/app/ui/components/login/login.component';
 
 export const UiComponentsRoutes: Routes = [
   {
@@ -37,6 +38,10 @@ export const UiComponentsRoutes: Routes = [
       {
         path: 'forms',
         component: AppFormsComponent,
+      },
+      {
+       path: 'login',
+       component: LoginComponent,
       },
       {
        path: 'register',
