@@ -27,12 +27,11 @@ export class UserService {
     }, {uname,password})
 
     const tokenResponse: tokenResponse = await firstValueFrom(observable) as tokenResponse;
-    if(tokenResponse){
-     localStorage.setItem("AccessToken",tokenResponse.token.AccessToken);
-    // localStorage.setItem("Expiration",token.Expiration.toString());
-     alert("Kullanıcı girişi başarılı ");
-    }
-     
-
+    console.log("tokenResponse geldi:", tokenResponse);
+    if (tokenResponse && tokenResponse.token && tokenResponse.token.accessToken) {
+    localStorage.setItem("AccessToken", tokenResponse.token.accessToken);
+    alert("Kullanıcı girişi başarılı");
+    } else 
+    console.warn("AccessToken bulunamadı:", tokenResponse);
   }
 }
