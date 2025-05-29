@@ -3,18 +3,9 @@ import {
   provideZoneChangeDetection,
   importProvidersFrom,
 } from '@angular/core';
-import {
-  HttpClient,
-  HttpClientModule,
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
+import {HttpClient,HttpClientModule,provideHttpClient,withInterceptorsFromDi,} from '@angular/common/http';
 import { routes } from './app.routes';
-import {
-  provideRouter,
-  withComponentInputBinding,
-  withInMemoryScrolling,
-} from '@angular/router';
+import { provideRouter,withComponentInputBinding,withInMemoryScrolling,} from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideClientHydration } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -30,6 +21,7 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
+import { JwtModule } from '@auth0/angular-jwt';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -52,7 +44,13 @@ export const appConfig: ApplicationConfig = {
       MaterialModule,
       TablerIconsModule.pick(TablerIcons),
       NgScrollbarModule,
-      HttpClientModule
+      HttpClientModule, 
+      JwtModule.forRoot({
+        config: {
+          tokenGetter: () => localStorage.getItem("accessToken"),
+          allowedDomains: ["localhost:7275"]
+        }
+      })
     ),
   ],
 };
