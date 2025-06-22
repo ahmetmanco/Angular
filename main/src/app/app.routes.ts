@@ -19,27 +19,42 @@ export const routes: Routes = [
     path: '',
     component: FullComponent,
     children: [
-      {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full',
-      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+
       {
         path: 'admin',
-        component: LayoutComponent, children: [
-          { path:"" ,component: DashboardComponent ,data: { title: 'Dashboard', urls: [{ title: 'Dashboard' }],},},
-          { path:"customer" ,component: CustomerComponent ,data: { title: 'Customer', urls: [{ title: 'Customer' }],},},
-          { path:"product" , component: ProductsComponent ,data: { title: 'Products', urls: [{ title: 'Products' }],},},
-          { path: "orders", component: OrdersComponent ,data: { title: 'Orders', urls: [{ title: 'Orders' }],},},
-          { path: "products/create", component: CreateComponent },
-          { path:'products/update/:id', component: UpdateComponent},
-          { path: 'dashboard', loadChildren: () =>import('./pages/pages.routes').then((m) => m.PagesRoutes),},
-       ], //  canActivate: [authGuard]
+        component: LayoutComponent,
+        children: [
+          { path: '', component: DashboardComponent, data: { title: 'Dashboard', urls: [{ title: 'Dashboard' }] } },
+          { path: 'customer', component: CustomerComponent, data: { title: 'Customer', urls: [{ title: 'Customer' }] } },
+          { path: 'product', component: ProductsComponent, data: { title: 'Products', urls: [{ title: 'Products' }] } },
+          { path: 'orders', component: OrdersComponent, data: { title: 'Orders', urls: [{ title: 'Orders' }] } },
+          { path: 'products/create', component: CreateComponent },
+          { path: 'products/update/:id', component: UpdateComponent },
+        ], canActivate: [authGuard]
       },
+
       {
-      path: '', component: StarterComponent, data: { title: 'Starter Page', urls: [ { title: 'Dashboard', url: '/dashboards/dashboard1' }, { title: 'Starter Page' },],},
+        path: 'dashboard',
+        loadChildren: () => import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
-      { path: 'ui-components',loadChildren: () =>import('./pages/ui-components/ui-components.routes').then((m) => m.UiComponentsRoutes ),},
+
+      {
+        path: '',
+        component: StarterComponent,
+        data: { title: 'Starter Page', urls: [
+              { title: 'Dashboard', url: '/dashboards/dashboard1' },
+              { title: 'Starter Page' },
+           ],
+         },
+       },
+
+      {
+        path: 'ui-components',
+        loadChildren: () =>
+          import('./pages/ui-components/ui-components.routes').then((m) => m.UiComponentsRoutes),
+      },
+
       {
         path: 'extra',
         loadChildren: () =>
@@ -47,9 +62,22 @@ export const routes: Routes = [
       },
     ],
   },
+
   {
-    path: '', component: BlankComponent,children: [{ path: 'login',component: LoginComponent, },
-      { path: 'register', component: RegisterComponent, },
-      { path: 'authentication', loadChildren: () =>import('./pages/authentication/authentication.routes').then( (m) => m.AuthenticationRoutes ),},]
-  },  { path: '**', redirectTo: 'authentication/error',},
+    path: '',
+    component: BlankComponent,
+    children: [
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
+      {
+        path: 'authentication',
+        loadChildren: () =>
+          import('./pages/authentication/authentication.routes').then(
+            (m) => m.AuthenticationRoutes
+          ),
+      },
+    ],
+  },
+
+  { path: '**', redirectTo: 'authentication/error' },
 ];
