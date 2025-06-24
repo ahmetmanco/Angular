@@ -3,7 +3,6 @@ import { HttpClientService } from './http-client.service';
 import { User } from 'src/app/Entities/user';
 import { Create_User } from 'src/app/contract/create_user';
 import { firstValueFrom, Observable } from 'rxjs';
-import { Token } from 'src/app/Token/token';
 import { tokenResponse } from 'src/app/Token/tokenResponse';
 
 @Injectable({
@@ -20,7 +19,7 @@ export class UserService {
     return await firstValueFrom(observable);
   }
 
-  async login(uname:string, password:string) : Promise<any> {
+  async login(uname:string, password:string, callBackFunction?: () => void) : Promise<any> {
     const observable : Observable<any | tokenResponse> = this.httpClientService.post<any | tokenResponse>({
       controller: "Users",
       action: "login"

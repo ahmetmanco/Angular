@@ -8,8 +8,8 @@ export const authGuard: CanActivateFn = (route, state) => {
   
   const token: string | null = localStorage.getItem("accessToken");
   if (token) {
-    const decodeToken = jwtHelper.decodeToken(token);
-    const expirationDate: Date | null = jwtHelper.getTokenExpirationDate(token);
+    //const decodeToken = jwtHelper.decodeToken(token);
+    //const expirationDate: Date | null = jwtHelper.getTokenExpirationDate(token);
     const expired: boolean = jwtHelper.isTokenExpired(token);
 
     if (!token || expired) {
