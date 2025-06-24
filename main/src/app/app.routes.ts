@@ -12,72 +12,63 @@ import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { CustomerComponent } from './admin/customer/customer.component';
 import { OrdersComponent } from './admin/orders/orders.component';
 import { StarterComponent } from './pages/starter/starter.component';
-
+import { HomeComponent } from './ui/components/home/home.component';
+import { BasketsComponent } from './ui/components/baskets/baskets.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: FullComponent,
-    children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-
-      {
-        path: 'admin',
-        component: LayoutComponent,
-        children: [
-          { path: '', component: DashboardComponent, data: { title: 'Dashboard', urls: [{ title: 'Dashboard' }] } },
-          { path: 'customer', component: CustomerComponent, data: { title: 'Customer', urls: [{ title: 'Customer' }] } },
-          { path: 'product', component: ProductsComponent, data: { title: 'Products', urls: [{ title: 'Products' }] } },
-          { path: 'orders', component: OrdersComponent, data: { title: 'Orders', urls: [{ title: 'Orders' }] } },
-          { path: 'products/create', component: CreateComponent },
-          { path: 'products/update/:id', component: UpdateComponent },
-        ], canActivate: [authGuard]
-      },
-
-      {
-        path: 'dashboard',
-        loadChildren: () => import('./pages/pages.routes').then((m) => m.PagesRoutes),
-      },
-
-      {
-        path: '',
-        component: StarterComponent,
-        data: { title: 'Starter Page', urls: [
-              { title: 'Dashboard', url: '/dashboards/dashboard1' },
-              { title: 'Starter Page' },
-           ],
-         },
-       },
-
-      {
-        path: 'ui-components',
-        loadChildren: () =>
-          import('./pages/ui-components/ui-components.routes').then((m) => m.UiComponentsRoutes),
-      },
-
-      {
-        path: 'extra',
-        loadChildren: () =>
-          import('./pages/extra/extra.routes').then((m) => m.ExtraRoutes),
-      },
-    ],
-  },
-
+  // 1. Public Pages (Login, Register gibi) - sade layout (BlankComponent)
   {
     path: '',
     component: BlankComponent,
     children: [
       { path: 'login', component: LoginComponent },
       { path: 'register', component: RegisterComponent },
-      {
-        path: 'authentication',
-        loadChildren: () =>
-          import('./pages/authentication/authentication.routes').then(
-            (m) => m.AuthenticationRoutes
-          ),
-      },
     ],
   },
 
-  { path: '**', redirectTo: 'authentication/error' },
+  // 2. Protected Pages (sidebar’lı layout) - FullComponent
+  {
+    path: '',
+    component: FullComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      {
+        path: 'admin',
+        component: LayoutComponent,
+        children: [
+          { path: '', component: DashboardComponent },
+          { path: 'customer', component: CustomerComponent },
+          { path: 'product', component: ProductsComponent },
+          { path: 'orders', component: OrdersComponent },
+          { path: 'products/create', component: CreateComponent },
+          { path: 'products/update/:id', component: UpdateComponent },
+        ],
+      },
+      {
+        path: 'dashboard',
+        loadChildren: () =>
+          import('./pages/pages.routes').then((m) => m.PagesRoutes),
+      },
+      {
+        path: '', component: StarterComponent,
+      },
+      {
+        path: '', component: BlankComponent,
+        children: [
+          { path: 'home', component: HomeComponent },
+          { path: 'baskets', component: BasketsComponent },
+          { path: 'product', component: ProductsComponent },
+          {
+            path: 'authentication',
+            loadChildren: () =>
+              import('./pages/authentication/authentication.routes').then(
+                (m) => m.AuthenticationRoutes
+              ),
+          },
+          { path: '**', redirectTo: 'authentication/error' },
+        ],
+      },
+    ],
+  },
 ];

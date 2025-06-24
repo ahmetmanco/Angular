@@ -49,5 +49,26 @@ export class AppBlogCardsComponent {
             price: '285',
             rprice: '375',
         },
+        {
+            id: 5,
+            imgSrc: '/assets/images/products/s4.jpg',
+            title: 'Boat Headphone',
+            price: '285',
+            rprice: '375',
+        },
+        {
+            id: 6,
+            imgSrc: '/assets/images/products/s4.jpg',
+            title: 'Boat Headphone',
+            price: '285',
+            rprice: '375',
+        },
+        {
+            id: 7,
+            imgSrc: '/assets/images/products/s4.jpg',
+            title: 'Boat Headphone',
+            price: '285',
+            rprice: '375',
+        },
     ];
 }

@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 
 @Component({
-  selector: 'app-login',
+  selector: 'login',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,7 +26,7 @@ export class LoginComponent {
   constructor(private router: Router, private userService : UserService,private snackBar: MatSnackBar) {}
 
   form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    uname: new FormControl('', [Validators.required, Validators.minLength(3)]),
     password: new FormControl('', [Validators.required]),
   });
 
@@ -52,5 +52,4 @@ export class LoginComponent {
     this.router.navigate(['/login']); // Başarısızsa login sayfasına yönlendir
   }
 }
-
 }
