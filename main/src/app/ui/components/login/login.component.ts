@@ -8,6 +8,9 @@ import { CommonModule } from '@angular/common';
 import { UserService } from 'src/app/services/common/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/services/common/auth.service';
+import { tokenResponse } from 'src/app/Token/tokenResponse';
+import { Token } from '@angular/compiler';
 
 @Component({
   selector: 'login',
@@ -23,7 +26,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
-  constructor(private router: Router, private userService : UserService,private snackBar: MatSnackBar) {}
+  constructor(private router: Router, private userService : UserService,private snackBar: MatSnackBar, private authService  : AuthService) {}
 
   form = new FormGroup({
     uname: new FormControl('', [Validators.required, Validators.minLength(3)]),
@@ -34,7 +37,9 @@ export class LoginComponent {
     return this.form.controls;
   }
   async login(uname:string, password:string) {
-    await this.userService.login(uname,password);
+    await this.userService.login(uname,password, () => {
+    this.authService.identityCheck(); // bu şart!
+    } );
   }
   
   async submit() {
@@ -52,4 +57,6 @@ export class LoginComponent {
     this.router.navigate(['/login']); // Başarısızsa login sayfasına yönlendir
   }
 }
+
+
 }

@@ -2,7 +2,7 @@
     <h2 class="f-s-18 m-y-8 text-lg-left text-center">HerYer - HerYerde</h2>
 
     <div class="d-flex align-items-center justify-content-center flex-wrap">
-        <a mat-button class="text-white d-none d-lg-flex" [routerLink]="['register']">
+        <a mat-button class="text-white d-none d-lg-flex"  *ngIf="!isAuthenticated" [routerLink]="['register']">
         <div class="d-flex align-items-center gap-4">
         <i-tabler name="lifebuoy" class="icon-20 d-flex"></i-tabler>
         <p>Register | Login</p>

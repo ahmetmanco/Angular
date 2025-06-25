@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './services/common/auth.service';
 
 @Component({
     selector: 'app-root',
@@ -7,7 +8,11 @@ import { RouterOutlet } from '@angular/router';
     templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'Modernize Angular Admin Template';
+  constructor(public authService : AuthService) {  }
+
+  ngOnInit() {
+  this.authService.identityCheck();
+}
 }
 //istek gönderiyorum
 // $.get("")
