@@ -16,12 +16,12 @@
           }
         </mat-nav-list>
       </ng-scrollbar>
-      <!-- <div class="p-24">
+      <div class="p-24">
         <div class="bg-light-secondary d-flex align-items-center gap-4 rounded p-20 m-t-20">
           
           
         </div>
-      </div> -->
+      </div>
     </div>
   </mat-sidenav>
   
@@ -33,7 +33,7 @@
     <!-- VerticalHeader -->
     <!-- ============================================================== -->
     
-    <!-- <app-header [showToggle]="!isOver" (toggleMobileNav)="sidenav.toggle()"></app-header> Admin ve kullanıcı Dashboard'a taşınmalı--> 
+    <app-header *ngIf="isAuthenticated" [showToggle]="!isOver" (toggleMobileNav)="sidenav.toggle()"></app-header>  <!--Admin ve kullanıcı Dashboard'a taşınmalı -->
     
     <main class="pageWrapper minWidth">
       <!-- ============================================================== -->

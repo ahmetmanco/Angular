@@ -3,6 +3,7 @@ import {
   Output,
   EventEmitter,
   Input,
+  OnInit,
   ViewEncapsulation,
 } from '@angular/core';
 import { TablerIconsModule } from 'angular-tabler-icons';
@@ -10,6 +11,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import { AuthService } from 'src/app/services/common/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -23,8 +25,19 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
   templateUrl: './header.component.html',
   encapsulation: ViewEncapsulation.None,
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  isAuthenticated: boolean = false;
+    constructor(public authService: AuthService) { }
+
   @Input() showToggle = true;
   @Input() toggleChecked = false;
   @Output() toggleMobileNav = new EventEmitter<void>();
+  
+ ngOnInit() {
+    this.authService.identityCheck();
+    this.authService.isAuthenticated$.subscribe(auth => {
+      this.isAuthenticated = auth;
+    });
+  }
+
 }

@@ -17,6 +17,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { AppNavItemComponent } from './sidebar/nav-item/nav-item.component';
 import { navItems } from './sidebar/sidebar-data';
 import { AppTopstripComponent } from './top-strip/topstrip.component';
+import { AuthService } from 'src/app/services/common/auth.service';
 
 
 const MOBILE_VIEW = 'screen and (max-width: 768px)';
@@ -33,7 +34,7 @@ const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
     // SidebarComponent,
     NgScrollbarModule,
     TablerIconsModule,
-    // HeaderComponent,
+    HeaderComponent,
     AppTopstripComponent
   ],
   templateUrl: './full.component.html',
@@ -41,6 +42,7 @@ const TABLET_VIEW = 'screen and (min-width: 769px) and (max-width: 1024px)';
   encapsulation: ViewEncapsulation.None
 })
 export class FullComponent implements OnInit {
+  isAuthenticated: boolean = false;
   navItems = navItems;
 
   @ViewChild('leftsidenav')
@@ -64,6 +66,7 @@ export class FullComponent implements OnInit {
     private settings: CoreService,
     private router: Router,
     private breakpointObserver: BreakpointObserver,
+    public authService: AuthService
   ) {
     this.htmlElement = document.querySelector('html')!;
     this.layoutChangesSubscription = this.breakpointObserver
@@ -88,7 +91,12 @@ export class FullComponent implements OnInit {
       });
   }
 
-  ngOnInit(): void { }
+  ngOnInit() {
+    this.authService.identityCheck();
+    this.authService.isAuthenticated$.subscribe(auth => {
+      this.isAuthenticated = auth;
+    });
+  }
 
   ngOnDestroy() {
     this.layoutChangesSubscription.unsubscribe();

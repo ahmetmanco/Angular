@@ -1,6 +1,7 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { inject } from '@angular/core';
+import { _isAuthenticated } from 'src/app/services/common/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
@@ -12,7 +13,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     //const expirationDate: Date | null = jwtHelper.getTokenExpirationDate(token);
     const expired: boolean = jwtHelper.isTokenExpired(token);
 
-    if (!token || expired) {
+    if (_isAuthenticated) {
       router.navigate(["login"], {queryParams: {returnUrl:state.url}});
       return false;
     }
