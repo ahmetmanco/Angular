@@ -1,22 +1,20 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { inject } from '@angular/core';
-import { _isAuthenticated } from 'src/app/services/common/auth.service';
+import { AuthService } from 'src/app/services/common/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const jwtHelper = inject(JwtHelperService);
-  
-  const token: string | null = localStorage.getItem("accessToken");
-  if (token) {
-    //const decodeToken = jwtHelper.decodeToken(token);
-    //const expirationDate: Date | null = jwtHelper.getTokenExpirationDate(token);
-    const expired: boolean = jwtHelper.isTokenExpired(token);
+  const authService = inject(AuthService); // AuthService enjekte et
 
-    if (_isAuthenticated) {
-      router.navigate(["login"], {queryParams: {returnUrl:state.url}});
-      return false;
-    }
+  const token = localStorage.getItem("accessToken");
+  const isExpired = token ? jwtHelper.isTokenExpired(token) : true;
+
+  if (!token || isExpired) {
+    authService.removeToken(); // State'i temizle
+    router.navigate(["login"], { queryParams: { returnUrl: state.url } });
+    return false;
   }
-  return true; // Token geçerli
+  return true;
 };
