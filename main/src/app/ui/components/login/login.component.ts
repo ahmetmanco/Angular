@@ -78,23 +78,24 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
  private handleGoogleLogin(user: SocialUser) {
-    this.googleLoading = true;
-    
-    this.userService.googleLogin(user.idToken).subscribe({
-        next: (response) => {
-            this.authService.setToken(response.token.accessToken);
-            this.navigateAfterLogin();
-        },
-        error: (error) => {
-            console.error('Google login error:', error);
-            this.snackBar.open('Google ile giriş başarısız', 'Kapat', {duration: 3000});
-        },
-        complete: () => {
-            this.googleLoading = false;
-        }
-    });
+  this.googleLoading = true;
+  
+  this.userService.googleLogin(user.idToken).subscribe({
+    next: (response) => {
+      this.authService.setToken(response.token.accessToken);
+      this.authService.identityCheck();
+      this.navigateAfterLogin();
+    },
+    error: (error) => {
+      console.error('Google login error:', error);
+      this.snackBar.open('Google ile giriş başarısız', 'Kapat', {duration: 3000});
+      this.googleLoading = false;
+    },
+    complete: () => {
+      this.googleLoading = false;
+    }
+  });
 }
-
   async submit() {
     if (this.form.invalid) return;
 
