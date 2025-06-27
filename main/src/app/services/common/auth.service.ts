@@ -11,9 +11,8 @@ export class AuthService {
 
   constructor(private jwtHelper: JwtHelperService) { }
 
-  // Token'i kaydet ve state'i güncelle
   setToken(token: string): void {
-    localStorage.setItem("accessToken", token); // Key'i tutarlı hale getir
+    localStorage.setItem("accessToken", token); 
     this._isAuthenticatedSubject.next(true);
   }
   getToken(): string | null {
@@ -24,19 +23,21 @@ export class AuthService {
   const token = this.getToken();
   return token ? this.jwtHelper.isTokenExpired(token) : true;
   }
-  // Token'i sil ve state'i güncelle
   removeToken(): void {
     localStorage.removeItem("accessToken");
     this._isAuthenticatedSubject.next(false);
   }
 logout() {
   this.removeToken();
-  // Gerekirse başka temizlikler
 }
   identityCheck(): void {
-    const token: string | null = localStorage.getItem("accessToken"); // Key tutarlılığı
+    const token: string | null = localStorage.getItem("accessToken"); 
     const expired: boolean = this.jwtHelper.isTokenExpired(token);
     const result = token != null && !expired;
     this._isAuthenticatedSubject.next(result);
   }
+  isAuthenticated(): boolean {
+  const token = localStorage.getItem("accessToken");
+  return !!token && !this.jwtHelper.isTokenExpired(token);
+}
 }

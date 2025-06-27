@@ -15,7 +15,6 @@ import { HomeComponent } from './ui/components/home/home.component';
 import { BasketsComponent } from './ui/components/baskets/baskets.component';
 
 export const routes: Routes = [
-  // Public Routes (Blank Layout)
   {
     path: '',
     component: BlankComponent,
@@ -26,10 +25,9 @@ export const routes: Routes = [
     ]
   },
 
-  // Private Routes (Full Layout - Sidebar ile)
   {
     path: '',
-    component: LayoutComponent, // FullComponent yerine LayoutComponent kullanıyoruz
+    component: LayoutComponent, 
     canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
@@ -37,11 +35,10 @@ export const routes: Routes = [
       { path: 'products/create', component: CreateComponent },
       { path: 'products/update/:id', component: UpdateComponent },
       { path: 'baskets', component: BasketsComponent },
-      // Diğer protected routes...
+  
     ]
   },
 
-  // Admin Routes
   {
     path: 'admin',
     component: LayoutComponent,
