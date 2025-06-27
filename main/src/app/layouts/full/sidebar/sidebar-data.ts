@@ -12,8 +12,6 @@ export const navItems: NavItem[] = [
     route: '',
     chip: true,
     external: false,
-    // chipClass: 'bg-secondary text-white',
-    // chipContent: 'PRO',
   },
   {
     displayName: 'Ürünler',

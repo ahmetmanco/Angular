@@ -10,18 +10,14 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideClientHydration } from '@angular/platform-browser';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-// icons
 import { TablerIconsModule } from 'angular-tabler-icons';
 import * as TablerIcons from 'angular-tabler-icons/icons';
-
-// perfect scrollbar
 import { NgScrollbarModule } from 'ngx-scrollbar';
-//Import all material modules
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { JwtModule } from '@auth0/angular-jwt';
+import { GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,16 +31,35 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding()
     ),
     provideHttpClient(withInterceptorsFromDi()),
-    // provideClientHydration(),
     provideAnimationsAsync(),
-    { provide: 'baseUrl', useValue: 'https://localhost:7275/api' ,multi:true}, 
+    { provide: 'baseUrl', useValue: 'https://localhost:7275/api', multi: true },
+    {
+      provide: "SocialAuthServiceConfig",
+  useValue: {
+    autoLogin: false,
+     providers: [
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider(
+          "785983913023-c98fbq70qm7e9h2sa4ml82bhs00cl6c2.apps.googleusercontent.com",
+          {
+            oneTapEnabled: false, // One Tap özelliği kapatıldı
+            // FedCM için gerekli olmayan parametreler kaldırıldı
+            scopes: 'openid profile email' // İzinler
+          }
+        )
+      }
+    ],
+    onError: err => console.error('Google auth error:', err) // Daha iyi hata loglama
+  } as SocialAuthServiceConfig
+    },
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,
       MaterialModule,
       TablerIconsModule.pick(TablerIcons),
       NgScrollbarModule,
-      HttpClientModule, 
+      HttpClientModule,
       JwtModule.forRoot({
         config: {
           tokenGetter: () => localStorage.getItem("accessToken"),

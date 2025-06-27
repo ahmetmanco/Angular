@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@abacritt/angularx-social-login": "^2.4.0",
     "@angular/animations": "^19.0.0",
     "@angular/cdk": "^19.0.0",
     "@angular/common": "^19.0.0",
@@ -23,6 +24,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
+    "@react-oauth/google": "^0.12.2",
     "angular-tabler-icons": "^2.7.0",
     "apexcharts": "^3.49.0",
     "ng-apexcharts": "1.7.6",
