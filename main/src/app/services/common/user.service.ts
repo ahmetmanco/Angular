@@ -46,9 +46,10 @@ export class UserService {
   }
    googleLogin(idToken: string): Observable<tokenResponse> {
     const payload = {
+      provider: 'GOOGLE',
       IdToken: idToken
     };
-return this.httpClientService.post<tokenResponse>({
+    return this.httpClientService.post<tokenResponse>({
       controller: "Users",
       action: "GoogleLogin"
      }, payload);

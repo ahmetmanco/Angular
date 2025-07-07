@@ -7,7 +7,7 @@ import { MaterialModule } from 'src/app/material.module';
 import { CommonModule } from '@angular/common';
 import { UserService } from 'src/app/services/common/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { firstValueFrom, Observable, Subscription } from 'rxjs';
+import { filter, firstValueFrom, Observable, Subscription, take } from 'rxjs';
 import { AuthService } from 'src/app/services/common/auth.service';
 import { tokenResponse } from 'src/app/Token/tokenResponse';
 import { SocialAuthService, SocialUser, GoogleLoginProvider } from '@abacritt/angularx-social-login';
@@ -22,7 +22,7 @@ import { GoogleSigninButtonModule } from '@abacritt/angularx-social-login';
     ReactiveFormsModule,
     RouterModule,
     MaterialModule,
-    GoogleSigninButtonModule // SADECE bu modülü import edin
+    GoogleSigninButtonModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
@@ -47,74 +47,89 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     socialAuthService.authState.subscribe((user: SocialUser)=> { console.log(user)})
   }
-
   ngOnInit() {
     this.setupGoogleAuth();
+    this.checkExistingSession();
   }
 
   ngOnDestroy() {
-    if (this.authSubscription) {
-      this.authSubscription.unsubscribe();
-    }
+    this.authSubscription?.unsubscribe();
   }
-
   get f() {
     return this.form.controls;
   }
 
-  private setupGoogleAuth() {
-    this.authSubscription = this.socialAuthService.authState.subscribe({
-      next: (user: SocialUser) => {
-        if (user) {
-          this.handleGoogleLogin(user);
-        }
-      },
-      error: (error) => {
-        console.error('Google auth error:', error);
-        this.snackBar.open('Google girişinde hata oluştu', 'Kapat', { duration: 3000 });
-        this.googleLoading = false;
-      }
-    });
+  private checkExistingSession() {
+    if (this.authService.isAuthenticated()) {
+      this.navigateAfterLogin();
+    }
   }
 
- private handleGoogleLogin(user: SocialUser) {
-  this.googleLoading = true;
-  
-  this.userService.googleLogin(user.idToken).subscribe({
-    next: (response) => {
-      this.authService.setToken(response.token.accessToken);
-      this.authService.identityCheck();
-      this.navigateAfterLogin();
-    },
-    error: (error) => {
-      console.error('Google login error:', error);
-      this.snackBar.open('Google ile giriş başarısız', 'Kapat', {duration: 3000});
-      this.googleLoading = false;
-    },
-    complete: () => {
+  private setupGoogleAuth() {
+    this.authSubscription = this.socialAuthService.authState
+      .pipe(filter(user => !!user))
+      .subscribe({
+        next: (user: SocialUser) => this.handleGoogleLogin(user),
+        error: (error) => this.handleGoogleError(error)
+      });
+  }
+
+  private async handleGoogleLogin(user: SocialUser) {
+    this.googleLoading = true;
+    
+    try {
+      const response = await this.userService.googleLogin(user.idToken).toPromise();
+      
+      if (response?.token?.accessToken) {
+        this.authService.setToken(response.token.accessToken);
+        this.navigateAfterLogin();
+      } else {
+        throw new Error('Geçersiz token yanıtı');
+      }
+    } catch (error) {
+      this.handleGoogleError(error);
+    } finally {
       this.googleLoading = false;
     }
-  });
-}
+  }
+
+  private handleGoogleError(error: any) {
+    console.error('Google auth error:', error);
+    this.snackBar.open('Google ile giriş başarısız oldu', 'Kapat', { 
+      duration: 5000,
+      panelClass: 'error-snackbar'
+    });
+    this.googleLoading = false;
+  }
+
   async submit() {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
 
     this.isLoading = true;
     try {
-      await this.userService.login(
+      const response = await this.userService.login(
         this.form.value.uname!, 
-        this.form.value.password!,
-        () => {
-          this.authService.identityCheck();
-          this.navigateAfterLogin();
-        }
+        this.form.value.password!
       );
+      
+      this.authService.setToken(response.token.accessToken);
+      this.navigateAfterLogin();
     } catch (error) {
-      console.error('Login error:', error);
-      this.snackBar.open('Giriş başarısız! Kullanıcı adı veya şifre hatalı.', 'Kapat', { duration: 3000 });
+      this.handleLoginError(error);
     } finally {
       this.isLoading = false;
     }
+  }
+
+  private handleLoginError(error: any) {
+    console.error('Login error:', error);
+    this.snackBar.open('Giriş başarısız! Kullanıcı adı veya şifre hatalı.', 'Kapat', { 
+      duration: 5000,
+      panelClass: 'error-snackbar'
+    });
   }
 
   signInWithGoogle(): void {
@@ -123,16 +138,16 @@ export class LoginComponent implements OnInit, OnDestroy {
       prompt: 'select_account',
       ux_mode: 'popup'
     }).catch(error => {
-      console.error('Google sign in error:', error);
-      this.snackBar.open('Google ile giriş başlatılamadı', 'Kapat', { duration: 3000 });
-      this.googleLoading = false;
+      this.handleGoogleError(error);
     });
   }
 
   private navigateAfterLogin() {
-    this.activatedRoute.queryParams.subscribe(params => {
-      const returnUrl = params['returnUrl'] || '/dashboard';
-      this.router.navigate([returnUrl]);
-    });
+    this.activatedRoute.queryParams
+      .pipe(take(1))
+      .subscribe(params => {
+        const returnUrl = params['returnUrl'] || '/dashboard';
+        this.router.navigateByUrl(returnUrl, { replaceUrl: true });
+      });
   }
 }
